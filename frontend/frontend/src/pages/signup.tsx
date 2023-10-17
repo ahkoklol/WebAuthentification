@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,38 +10,34 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+function SignUp() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
-
-export default function SignUp() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    try {
+      // Make a POST request to your backend for user signup
+      const response = await axios.post('http://localhost:4000/api/user/signup', {
+        email,
+        password,
+      });
+
+      // Handle the response from the server, e.g., display a success message or redirect the user.
+      console.log('Signup successful:', response.data);
+
+      // You may want to update your state or context with the user's information here.
+    } catch (error) {
+      // Handle errors, e.g., show an error message to the user.
+      console.error('Signup error:', error);
+    }
   };
-  
-    const [email, setEmail] = React.useState('')
-    const [password, setPassword] = React.useState('')
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={createTheme()}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -68,9 +64,8 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  //two way data binding with state, when the user types in the input field, the state is updated
+                  value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                    value={email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -80,10 +75,9 @@ export default function SignUp() {
                   name="password"
                   label="Password"
                   type="password"
-                  id="password"
                   autoComplete="new-password"
+                  value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                    value={password}
                 />
               </Grid>
             </Grid>
@@ -104,8 +98,9 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-        <Copyright />
       </Container>
     </ThemeProvider>
   );
 }
+
+export default SignUp;

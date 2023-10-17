@@ -2,11 +2,13 @@ import "dotenv/config";
 import express, { Request, Response } from "express";
 import mongoose from 'mongoose';
 import userRoutes from './routes/user'; // Correct the import statement for userRoutes
+import cors from 'cors';
 
 // express app
 const app = express();
 
 // middleware
+app.use(cors());
 app.use(express.json());
 
 app.use((req: Request, res: Response, next) => {
