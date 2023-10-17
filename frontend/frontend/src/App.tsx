@@ -3,9 +3,16 @@ import './App.css'
 import Signup from './pages/signup'
 import Login from './pages/login'
 import { Link, Outlet } from 'react-router-dom'
+import { useLogout } from './hooks/useLogout'
 
 function App() {
   const [count, setCount] = useState(0)
+
+  const { logout } = useLogout()
+
+  const handleClick = () => {
+    logout()
+  }
 
   return (
     <>
@@ -13,6 +20,9 @@ function App() {
         <Link to="/">Home</Link>
         <Link to="/login">Login</Link>
         <Link to="/signup">Signup</Link>
+      </div>
+      <div>
+        <button onClick={handleClick}>Log out</button>
       </div>
 
       <div>

@@ -14,41 +14,26 @@ import axios from 'axios';
 import { AxiosError } from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSignup } from '../hooks/useSignup';
 
 function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { signup, error, isLoading } = useSignup();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      // Make a POST request to your backend for user signup
-      const response = await axios.post('http://localhost:4000/api/user/signup', {
-        email,
-        password,
-      });
-
-      // Handle the response from the server, e.g., display a success message or redirect the user.
-      console.log('Signup successful:', response.data);
-
-      // Show a success message
-      toast.success('Welcome!'); // here fetch the user Name and Surname from the backend and show it in the toast message
-
-      // You may want to update your state or context with the user's information here.
+      // Call the signup function from the hook
+      await signup(email, password);
+      // If the signup function executes successfully, it will handle errors and loading states internally.
     } catch (error) {
-      // Handle errors, e.g., show an error message to the user.
+      // This block is not needed as error handling is done in the hook.
       console.error('Signup error:', error);
-
-      // Cast the error object to AxiosError
-      const axiosError = error as AxiosError;
-
-      // Check the specific error and show an appropriate error message
-      if (axiosError.response) {
-          toast.error('Bad request. Please check your data.'); // Custom error message for status code 400
-      }
     }
   };
+
 
   return (
     <ThemeProvider theme={createTheme()}>
@@ -100,6 +85,7 @@ function SignUp() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
             >
               Sign Up
             </Button>
