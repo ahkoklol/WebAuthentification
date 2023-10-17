@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, ReactNode, Dispatch } from 'react';
+import React, { createContext, useReducer, ReactNode, Dispatch, useEffect } from 'react';
 
 // Define the shape of the context value
 interface AuthContextValue {
@@ -8,6 +8,7 @@ interface AuthContextValue {
 
 // Define the shape of a user (you should define your actual User type)
 interface User {
+  email: string;
   // Define the properties of your User type
   // Example: id, name, email, etc.
 }
@@ -45,6 +46,21 @@ const initialState: AuthContextValue = {
 // AuthContextProvider component
 export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+
+  // [] means only do it once when the component renders (check token in localStorage)
+  useEffect(() => {
+    const userString = localStorage.getItem('user');
+
+  if (userString) {
+    const user = JSON.parse(userString);
+    if (user && user.email) {
+      const email = user.email;
+      const updatedUser: User = { email }; // You should include other user properties
+
+      dispatch({ type: 'LOGIN', payload: updatedUser });
+    }
+  }
+  }, []) 
 
   console.log('AuthContext state: ', state);
 
