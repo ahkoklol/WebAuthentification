@@ -9,7 +9,15 @@ const createToken = (id: string) => {
 
 // Login user
 export const loginUser = async (req: Request, res: Response) => {
-    res.json({ mssg: 'User successfully logged in' });
+    const { email, password } = req.body;
+
+    try {
+        const user = await UserModel.login(email, password);
+        const token = createToken(user.id);
+        res.status(200).json({ email, token });
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
 };
 
 // Signup user

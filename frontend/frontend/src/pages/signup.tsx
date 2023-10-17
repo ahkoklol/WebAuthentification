@@ -11,6 +11,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
+import { AxiosError } from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SignUp() {
   const [email, setEmail] = useState('');
@@ -29,10 +32,21 @@ function SignUp() {
       // Handle the response from the server, e.g., display a success message or redirect the user.
       console.log('Signup successful:', response.data);
 
+      // Show a success message
+      toast.success('Welcome!'); // here fetch the user Name and Surname from the backend and show it in the toast message
+
       // You may want to update your state or context with the user's information here.
     } catch (error) {
       // Handle errors, e.g., show an error message to the user.
       console.error('Signup error:', error);
+
+      // Cast the error object to AxiosError
+      const axiosError = error as AxiosError;
+
+      // Check the specific error and show an appropriate error message
+      if (axiosError.response) {
+          toast.error('Bad request. Please check your data.'); // Custom error message for status code 400
+      }
     }
   };
 
@@ -99,6 +113,7 @@ function SignUp() {
           </Box>
         </Box>
       </Container>
+      <ToastContainer />
     </ThemeProvider>
   );
 }

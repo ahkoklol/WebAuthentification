@@ -53,5 +53,35 @@ userSchema.statics.signup = async function (email: string, password: string) {
     return user;
 };
 
+// Define the User model type
+export interface UserModel extends Model<UserDocument> {
+    login(email: string, password: string): Promise<UserDocument>;
+}
+
+
+// static login method
+userSchema.statics.login = async function (email: string, password: string) {
+    
+    // validation
+    if(!email || !password) { // checks if email and password are provided
+        throw new Error('Email and password are required');
+    }
+    if (!validator.isEmail(email)) { // checks if email is in email format
+        throw new Error('Email is invalid');
+    }
+    
+    const user = await this.findOne({ email });
+    if (!user) {
+        throw new Error('Email does not exist');
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        throw new Error('Password is incorrect');
+    }
+
+    return user;
+};
+
 // Create and export the User model
 export const UserModel = mongoose.model<UserDocument, UserModel>('User', userSchema);
