@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import mongoose from 'mongoose';
 import userRoutes from './routes/user'; // Correct the import statement for userRoutes
 import cors from 'cors';
+import workoutRoutes from "./routes/workout";
 
 // express app
 const app = express();
@@ -22,7 +23,9 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Fix the route path and use userRoutes
+app.use('/api/workouts', workoutRoutes)
 app.use('/api/user', userRoutes);
+
 
 // check if MONGO_URI is defined
 if (!process.env.MONGO_URI) {
